@@ -12,6 +12,7 @@ from pprint import pprint as pp
 
 log = logging.getLogger(__name__)
 
+
 class LLMProcessor:
     def __init__(self, model_name, model_provider):
         self.model_name = model_name
@@ -45,7 +46,7 @@ radar = RapidDataRetriever(
 #     template=prompts['json_description'])
 
 if __name__ == "__main__":
-    with open("prompts.yaml") as f:
+    with open("prompts.yaml", "r") as f:
         prompts = yaml.safe_load(f)
 
     lp = LLMProcessor("gpt-4o", "openai")

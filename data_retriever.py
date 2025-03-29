@@ -24,7 +24,7 @@ class RapidDataRetriever:
     def __init__(self, base_url, apikey, host):
         self.headers = {
             "x-rapidapi-key": apikey,
-	        "x-rapidapi-host": host}
+            "x-rapidapi-host": host}
         self.url = base_url
         self.league_id = None
 
@@ -46,8 +46,8 @@ class RapidDataRetriever:
                 "current": "true"}
             res = self.get_(f"{self.url}/leagues", params=payload)
 
-            for i in res.get("response", []):
-                if i["league"]["name"] == league_name:
+            for i in res.get("response", {}):
+                if i.get("league", {}).get("name") == league_name:
                     self.league_id = i["league"]["id"]
                     log.info(f"Got league ID for {league_name}: {self.league_id}")
                     break
@@ -64,7 +64,6 @@ class RapidDataRetriever:
 
         if fixtures := res.get("response"):
             log.info(f"Found {len(fixtures)} matches from {date}")
-            # fixture_ids = [f["fixture"]["id"] for f in fixtures]
             return fixtures
         else:
             log.info(f"No matches from {date}")
@@ -112,10 +111,12 @@ if __name__ == "__main__":
     # print(radar.get_league_id(league_name="Czech Liga", country_code="cz"))
 
     # yesterday = (datetime.now() - timedelta(1)).strftime('%Y-%m-%d')
-    last_match = (datetime.now() - timedelta(10)).strftime('%Y-%m-%d')
+    last_match = (datetime.now() - timedelta(13)).strftime('%Y-%m-%d')
     # print(radar.get_league_fixtures(date=last_match))
 
-    radar.get_full_data(date=last_match)
+    data = radar.get_full_data(date=last_match)
+    pp(data)
+
 
 
 
