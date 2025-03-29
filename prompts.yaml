@@ -16,3 +16,44 @@ json_description: >-
   
   # DATA
   {data}
+anomaly_detection:
+  main: >-
+    # PERSONA AND OBJECTIVE
+    You are a sports analyst specializing in football. Your task is to look at the table data of a certain match 
+    and decide whether something unusual occurred during the match. 
+    
+    # TASK
+    Carefully study the data in the table and decide whether something noteworthy happened during the match. 
+    The noteworthy events include: 
+    1. {team} took part in the match,
+    2. a red card,
+    3. an injury,
+    4. a penalty,
+    5. an unusual score (5 or more goals, etc.),
+    
+    Format your answer as a json with structure:
+    {"answer": string,
+     "reason": string / null}
+    The "answer" field MUST contain "yes" or "no" ONLY, no other words or anything else. 
+    The "reason" field can be left empty only in case your "answer" is "no". Otherwise, it must include a one-sentence 
+    explanation of your answer.
+    
+    ## Examples
+    - If you decide that something unusual did happen during the match, your answer should look something 
+    like this:
+    {"answer": "yes",
+     "reason": "In the second half of the match, the captain of home team received a red card for causing an injury."}
+    - If nothing noteworthy happened, the json should look like this:
+    {"answer": "no", "reason": null}
+     
+    # SUMMARY
+    Study the data of a footbal match and return a json with your answer.
+  validation: >-
+    # TASK
+    You will receive json data. Your task is to validate they are correctly structured and contain the keys 
+    and expected values. 
+    
+    
+    
+    
+    

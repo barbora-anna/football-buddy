@@ -1,0 +1,8 @@
+{
+    "type": "object",
+    "properties": {
+        "answer": {"enum": ["yes", "no"]},
+        "reason": {"type": ["string", "null"]}
+    },
+    "required": ["answer", "reason"]
+}

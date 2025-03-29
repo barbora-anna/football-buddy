@@ -7,7 +7,7 @@ import jsonschema
 from datetime import datetime, timedelta
 from pprint import pprint as pp
 
-from data_schema import schema
+# from json_schemas.data_schema import rapid_schema
 from data_retriever import RapidDataRetriever
 from llm_stuff import LLMProcessor
 from db_operations import DatabaseManager
@@ -17,6 +17,7 @@ log = logging.getLogger(__name__)
 
 
 llm_for_commentary = "gpt-4o"
+llm_for_evaluation = "..."
 
 
 radar = RapidDataRetriever(
@@ -36,7 +37,7 @@ last_match = (datetime.now() - timedelta(13)).strftime('%Y-%m-%d')
 matches_data = radar.get_full_data(date=last_match)
 for i in matches_data:
     try:
-        jsonschema.validate(instance=i, schema=schema)
+        jsonschema.validate(instance=i, schema=rapid_schema)
     except jsonschema.exceptions.ValidationError as ve:
         log.fatal(f"Unable to process data from API! Invalid schema: {ve}")
         raise
@@ -52,12 +53,14 @@ for md in matches_data:
                  "model": llm_for_commentary}
 pp(matches_data)
 
-# Create tables in the database
+# Create tables in the database and insert data
 dam.connect()
-dam.create_tables("create_tables.sql")
+dam.execute_sql_script("sql_scripts/create_tables.sql")
 for match in matches_data:
     dam.insert_into_fixture(match)
 dam.close()
+
+# Retrieve data of interest
 
 
 

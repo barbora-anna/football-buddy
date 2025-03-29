@@ -21,17 +21,17 @@ class DatabaseManager:
         if self.conn:
             self.conn.close()
 
-    def flatten_dict(self, nested_dict, parent_key='', sep='_'):
-        items = []
-        for k, v in nested_dict.items():
-            new_key = f"{parent_key}{sep}{k}" if parent_key else k
-            if isinstance(v, dict):
-                items.extend(self.flatten_dict(v, new_key, sep=sep).items())
-            else:
-                items.append((new_key, v))
-        return dict(items)
+    # def flatten_dict(self, nested_dict, parent_key='', sep='_'):
+    #     items = []
+    #     for k, v in nested_dict.items():
+    #         new_key = f"{parent_key}{sep}{k}" if parent_key else k
+    #         if isinstance(v, dict):
+    #             items.extend(self.flatten_dict(v, new_key, sep=sep).items())
+    #         else:
+    #             items.append((new_key, v))
+    #     return dict(items)
 
-    def create_tables(self, script_filename):
+    def execute_sql_script(self, script_filename):
         with open(script_filename, "r") as f:
             script = f.read()
         calls = script.split(";")
@@ -44,11 +44,16 @@ class DatabaseManager:
         self.conn.commit()
 
     def insert_into(self, table_name, columns, values):
-        query = f'''
-        INSERT OR IGNORE INTO {table_name} ({", ".join(columns)})
-        VALUES ({", ".join(["?"] * len(values))})
-        '''
-        self.cursor.execute(query, values)
+        try:
+            query = f'''
+            INSERT OR IGNORE INTO {table_name} ({", ".join(columns)})
+            VALUES ({", ".join(["?"] * len(values))})
+            '''
+            self.cursor.execute(query, values)
+            self.conn.commit()
+        except sqlite3.IntegrityError as e:
+            log.exception(
+                f"Data insert failed for table <{table_name}>. Columns: {columns}; Values: {values}; Res: {e}")
 
     def insert_into_fixture(self, fixture_data):
         f_id = fixture_data["fixture_id"]
@@ -72,7 +77,6 @@ class DatabaseManager:
             league["season"]
         ]
         self.insert_into(table_name="Fixture", columns=columns, values=values)
-        self.conn.commit()
 
         away_team = fixture_data["about"]["teams"]["away"]
         columns = [
@@ -86,7 +90,6 @@ class DatabaseManager:
             away_team["winner"]
         ]
         self.insert_into(table_name="Teams", columns=columns, values=values)
-        self.conn.commit()
 
         home_team = fixture_data["about"]["teams"]["home"]
         values = [
@@ -98,7 +101,6 @@ class DatabaseManager:
             home_team["winner"]
         ]
         self.insert_into(table_name="Teams", columns=columns, values=values)
-        self.conn.commit()
 
         score = fixture_data["about"]["score"]
         columns = ["fixture_id", "score_type", "team_id", "score_value"]
@@ -111,7 +113,6 @@ class DatabaseManager:
                     score[score_type][team_id]
                 ]
                 self.insert_into(table_name="Score", columns=columns, values=values)
-                self.conn.commit()
 
         events = fixture_data["events"]
         columns = [
@@ -130,7 +131,6 @@ class DatabaseManager:
                 e["type"]
             ]
             self.insert_into(table_name="Events", columns=columns, values=values)
-            self.conn.commit()
 
         stats = fixture_data["stats"]
         columns = ["fixture_id", "team_id", "type", "value"]
@@ -142,17 +142,15 @@ class DatabaseManager:
                     s["type"],
                     s["value"]]
                 self.insert_into(table_name="Stats", columns=columns, values=values)
-                self.conn.commit()
 
         columns = ["fixture_id", "text", "llm"]
         values = [f_id, fixture_data["llm"]["description"], fixture_data["llm"]["model"]]
         self.insert_into(table_name="Commentary", columns=columns, values=values)
-        self.conn.commit()
 
 
 if __name__ == "__main__":
     dam = DatabaseManager(db_name="football_matches.db")
     dam.connect()
-    dam.create_tables("create_tables.sql")
+    dam.execute_sql_script("create_tables.sql")
 
 
