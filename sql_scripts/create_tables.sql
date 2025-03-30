@@ -18,7 +18,8 @@ CREATE TABLE IF NOT EXISTS Teams (
     team_id STRING,
     logo STRING,
     name STRING,
-    winner BOOLEAN
+    winner BOOLEAN,
+    goals INTEGER
 );
 
 CREATE TABLE Score (

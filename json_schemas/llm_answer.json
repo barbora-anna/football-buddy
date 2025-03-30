@@ -1,8 +1,8 @@
 {
     "type": "object",
     "properties": {
-        "answer": {"enum": ["yes", "no"]},
+        "trigger": {"enum": ["yes", "no"]},
         "reason": {"type": ["string", "null"]}
     },
-    "required": ["answer", "reason"]
+    "required": ["trigger", "reason"]
 }

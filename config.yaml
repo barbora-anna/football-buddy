@@ -1,3 +1,11 @@
+data_config:
+  team:
+    league: Czech Liga
+    team: Slavia
+    season: 2024
+    country_code: cz
+  db_name: football_matches.db
+
 rapid_api:
   base_url: https://api-football-v1.p.rapidapi.com/v3
   host: api-football-v1.p.rapidapi.com
@@ -7,13 +15,15 @@ llm:
   data_validation: gpt-4o
 
 email_service:
-  sender_metadata:
-    email: football-buddy@seznam.cz
-  receiver_metadata:
-    interested_in_team: Slavia
-    email: armagrillo@email.cz
+  participants_meta:
+    sender:
+      email: football-buddy@seznam.cz
+    receiver:
+      email: bajaneckova@email.cz
   email_params:
     subject: There was a cool match! ⚽🚀
+    # Could contain further params, e.g. max_length
   smtp:
     host: smtp.seznam.cz
     port: 465
+

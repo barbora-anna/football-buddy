@@ -1,11 +1,11 @@
 import logging
 import os
-import requests
-from functools import wraps
 from datetime import datetime, timedelta
-
+from functools import wraps
 from pprint import pprint as pp
 
+import jsonschema
+import requests
 
 log = logging.getLogger(__name__)
 
@@ -32,8 +32,7 @@ class RapidDataRetriever:
     def get_(self, url, **kwargs):
         return requests.get(url, headers=self.headers, **kwargs)
 
-    # TODO: decorator for index validation
-    def get_league_id(self, league_name: str = "Czech Liga", country_code: str = "cz") -> int:
+    def get_league_id(self, league_name, country_code) -> int:
         """
         Get source league ID by league name.
         :param league_name: The name of the league in question
@@ -55,9 +54,9 @@ class RapidDataRetriever:
                 raise RuntimeError(f"League {league_name} not found! Response: {res}")
         return self.league_id
 
-    def get_league_fixtures(self, date, season: int = 2024):
+    def get_league_fixtures(self, date, season, league, country_code):
         payload = {
-            "league": self.get_league_id(),
+            "league": self.get_league_id(league, country_code),
             "date": date,
             "season": season}
         res = self.get_(f"{self.url}/fixtures", params=payload)
@@ -80,8 +79,8 @@ class RapidDataRetriever:
             log.info(f"No events found for fixture {fixture_id}")
             return []
 
-    def get_full_data(self, date, season: int = 2024):
-        fixtures = self.get_league_fixtures(date, season)
+    def get_full_data(self, date, season, league, country_code):
+        fixtures = self.get_league_fixtures(date, season, league, country_code)
         full_data = []
 
         for f in fixtures:
@@ -97,24 +96,23 @@ class RapidDataRetriever:
 
         return full_data
 
-
-
-
-
-
+    @staticmethod
+    def data_is_ok(data: dict, schema) -> bool:
+        try:
+            jsonschema.validate(instance=data, schema=schema)
+            return True
+        except jsonschema.exceptions.ValidationError as ve:
+            log.exception(f"Data does not match schema! Detail: {ve}")
+            return False
 
 
 if __name__ == "__main__":
     radar = RapidDataRetriever(base_url="https://api-football-v1.p.rapidapi.com/v3",
                                apikey=os.getenv("RAPID_APIKEY"),
                                host=os.getenv("RAPID_HOST"))
-    # print(radar.get_league_id(league_name="Czech Liga", country_code="cz"))
 
-    # yesterday = (datetime.now() - timedelta(1)).strftime('%Y-%m-%d')
-    last_match = (datetime.now() - timedelta(13)).strftime('%Y-%m-%d')
-    # print(radar.get_league_fixtures(date=last_match))
-
-    data = radar.get_full_data(date=last_match)
+    yesterday = (datetime.now() - timedelta(1)).strftime('%Y-%m-%d')
+    data = radar.get_full_data(date=yesterday)
     pp(data)
 
 

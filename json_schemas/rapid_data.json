@@ -112,9 +112,9 @@
               "type": "object",
               "properties": {
                 "id": { "type": "integer" },
-                "logo": { "type": "string" },
+                "logo": { "type": ["string", "null"] },
                 "name": { "type": "string" },
-                "winner": { "type": "boolean" }
+                "winner": { "type": ["boolean", "null"] }
               },
               "required": ["id", "logo", "name", "winner"]
             },
@@ -122,9 +122,9 @@
               "type": "object",
               "properties": {
                 "id": { "type": "integer" },
-                "logo": { "type": "string" },
+                "logo": { "type": ["string", "null"] },
                 "name": { "type": "string" },
-                "winner": { "type": "boolean" }
+                "winner": { "type": ["boolean", "null"] }
               },
               "required": ["id", "logo", "name", "winner"]
             }
