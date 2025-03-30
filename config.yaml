@@ -1,0 +1,19 @@
+rapid_api:
+  base_url: https://api-football-v1.p.rapidapi.com/v3
+  host: api-football-v1.p.rapidapi.com
+
+llm:
+  commentary_model: gpt-4o
+  data_validation: gpt-4o
+
+email_service:
+  sender_metadata:
+    email: football-buddy@seznam.cz
+  receiver_metadata:
+    interested_in_team: Slavia
+    email: armagrillo@email.cz
+  email_params:
+    subject: There was a cool match! ⚽🚀
+  smtp:
+    host: smtp.seznam.cz
+    port: 465

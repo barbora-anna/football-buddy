@@ -23,10 +23,14 @@ Sends an automated email if the LLM finds noteworthy insights.
 ## Project structure
 ```
 /football-buddy 
+│── json_schemas           # Schemas for json structure validation
+    │── llm_answer.json 
+    │── rapid_data.json
+│── sql_scripts            # Larger SQL scripts
 │── data_retriever.py      # Fetches match fixtures from Rapid API 
 │── llm_stuff.py           # Generates match descriptions 
 │── database.py            # Stores and processes match data in SQLite 
-│── analysis.py            # Analyzes data and generates insights 
+│── pipeline.py            # Runs the whole process 
 │── email_notifier.py      # Sends email alerts 
 │── requirements.txt       # Required Python libraries 
 │── README.md              # Documentation 

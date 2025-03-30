@@ -123,3 +123,6 @@ venv.bak/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+
+# dev files
+/dummy_data.json
