@@ -151,7 +151,7 @@
           "player": {
             "type": "object",
             "properties": {
-              "id": { "type": "integer" },
+              "id": { "type": ["integer", "null"] },
               "name": { "type": "string" }
             },
             "required": ["id", "name"]

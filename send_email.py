@@ -5,20 +5,6 @@ from email.message import EmailMessage
 
 log = logging.getLogger(__name__)
 
-# seznam_email = os.getenv("EMAIL_SENDER_ADDRESS")
-# seznam_password = os.getenv("EMAIL_SENDER_PASSWORD")
-#
-# msg = EmailMessage()
-# msg['Subject'] = 'pls work'
-# msg['From'] = seznam_email
-# msg['To'] = 'armagrillo@email.cz'
-# msg.set_content('test email')
-#
-# with smtplib.SMTP_SSL('smtp.seznam.cz', 465) as server:
-#     server.login(seznam_email, seznam_password)
-#     server.send_message(msg)
-
-###################################
 
 class EmailSender:
     def __init__(self, host, port, sender_email, sender_password):

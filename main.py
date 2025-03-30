@@ -131,7 +131,7 @@ if __name__ == "__main__":
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
         handlers=[logging.StreamHandler()],
         level="DEBUG")
-    # log.setLevel("DEBUG")
+    # TODO: argparse to pass log level
 
     # LOAD CONFIG
     with open("config.yaml", "r") as f:

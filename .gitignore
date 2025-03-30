@@ -126,3 +126,4 @@ dmypy.json
 
 # dev files
 /dummy_data.json
+/football_matches.db

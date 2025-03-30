@@ -33,12 +33,6 @@ class RapidDataRetriever:
         return requests.get(url, headers=self.headers, **kwargs)
 
     def get_league_id(self, league_name, country_code) -> int:
-        """
-        Get source league ID by league name.
-        :param league_name: The name of the league in question
-        :param country_code: Two-letter country identifier (e.g. "us", "gb", "cz", etc.)
-        :return: League ID
-        """
         if not self.league_id:
             payload = {
                 "code": country_code,

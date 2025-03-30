@@ -137,7 +137,3 @@ email_formatting:
     llm:
       name: gpt-4o
       temperature: 0
-
-    
-    
-    
